@@ -36,6 +36,12 @@ public class movimientoSideScroll : MonoBehaviour
         }
     }
 
+    void OnTriggerEnter2D(Collider2D col){
+        if(col.gameObject.CompareTag("Muerte")){
+            transform.position=Vector2.zero;
+        }
+    }
+
 // Esto es una alternativa (mejor) a estar multiplicando todo por Time.deltaTime
     void FixedUpdate(){
         rbtopdown.velocity=new Vector2(movX,rbtopdown.velocity.y);
