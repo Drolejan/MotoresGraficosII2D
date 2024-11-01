@@ -11,14 +11,14 @@ public class movimientoSideScroll : MonoBehaviour
     public float jumpForce;
     public int jumps;
     public checkpoints checkpoint;
-    public int savedCheckpoint;
+    public int savedCheckpoint;//Este es el dato que vamos a guardar
     // Start is called before the first frame update
     void Start()
     {
         rbtopdown=GetComponent<Rigidbody2D>();
         playeranim=GetComponent<Animator>();
-        //Comenzamos en el primer checkpoint
-        transform.position=checkpoint.checkpoint.position;
+        //Leemos el dato guardado
+        savedCheckpoint=PlayerPrefs.GetInt("savedCheckpoint");
         //Esto es lo mismo pero para el sistema de guardado
         transform.position=checkpoint.transforms[savedCheckpoint].position;
     }
@@ -44,8 +44,6 @@ public class movimientoSideScroll : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col){
         if(col.gameObject.CompareTag("Muerte")){
-            //Mueres y regresas al checkpoint (sin salvado)
-            transform.position=checkpoint.checkpoint.position;
             //Con sistema de salvado
             transform.position=checkpoint.transforms[savedCheckpoint].position;
         }
@@ -54,8 +52,15 @@ public class movimientoSideScroll : MonoBehaviour
             //Asignamos este objeto como el nuevo checkpoint
             checkpoint.checkpoint=col.gameObject.transform;
             col.enabled=false;//desactivamos la colision del checkpoint
-            //Actualizamos la lista de checkpoints
-            savedCheckpoint++;
+            
+            //Si llegamos al ultimo checkpoint no se actualiza
+            if(savedCheckpoint<2){
+                //Actualizamos la lista de checkpoints
+                savedCheckpoint++;
+            }
+            //Guardar el dato del checkpoint
+            PlayerPrefs.SetInt("savedCheckpoint",savedCheckpoint);
+            PlayerPrefs.Save();
         }
     }
 
